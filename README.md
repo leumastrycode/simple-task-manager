@@ -37,6 +37,8 @@ _Add screenshot here_
 Example:
 
 ![App Screenshot](./public/ss-managementApp-1.png)
+![App Screenshot](./public/ss-managementApp-2.png)
+![App Screenshot](./public/ss-managementApp-3.png)
 
 ---
 
