@@ -1,9 +1,55 @@
 import './App.css'
-import calendar from "./assets/calendar.png"
-import add from "./assets/add.png"
-import trash from "./assets/trash.png"
+import { useState, useEffect } from "react";
+import Column from "./components/Column";
+
+type Task = {
+  id: string;
+  title: string;
+  content: string;
+  date: string;
+  status: "todo" | "in-progress" | "in-review" | "done";
+};
+
 
 function App() {
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const saved = localStorage.getItem("tasks");
+
+    if (saved) {
+      return JSON.parse(saved);
+    }
+
+    return [
+      {
+        id: "1",
+        title: "Welcome 👋",
+        content: "Mulai bikin task pertama",
+        date: "Today",
+        status: "todo",
+      },
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  const addTask = (title: string) => {
+    const newTask: Task = {
+      id: Date.now().toString(),
+      title,
+      content: "No description",
+      date: "Today",
+      status: "todo",
+    };
+
+    setTasks((prev) => [...prev, newTask]);
+  };
+
+  const deleteTask = (id: string) => {
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  };
+
   return (
     <div className="min-h-screen py-5 px-7 flex items-start justify-center bg-neutral-900 text-white">
 
@@ -21,110 +67,24 @@ function App() {
 
         <div className='w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 border rounded-[6px] '>
 
-          <div className='flex flex-col items-start justify-start bg-neutral-800 p-3 gap-4 rounded-[5px] min-h-[300px]'>
-            <div className='w-full flex flex-row gap-3 items-center
-             justify-between '>
-              <p className='text-sm font-medium text-neutral-300'>To Do</p>
-              <button>
-                <img src={add} alt="add" className='w-5 h-5 invert opacity-70 hover:opacity-100 transition' />
-              </button>
-            </div>
-
-            <div className='w-full flex flex-col items-start justify-center bg-neutral-100 text-neutral-900 rounded-[5px] hover:bg-neutral-300 transition'>
-              <h1 className='pt-3 px-2 text-[18px] font-semibold'>Title</h1>
-              <p className='pb-3 px-2'>Content</p>
-              <div className='w-full mt-2 border-t border-neutral-600'></div>
-
-              <div className='w-full flex flex-row items-center justify-between'>
-                <div className='p-2 flex flex-row gap-2 items-center'>
-                  <img src={calendar} alt="calendar" className='w-5 h-5 opacity-55' />
-                  <p className='font-semibold text-[12px]'>Apr 4</p>
-                </div>
-
-                <img src={trash} alt="trash"
-                  className='w-4 h-4 m-2 text-red-500 opacity-70 hover:opacity-100 hover:scale-110 transition cursor-pointer' />
-              </div>
-            </div>
-          </div>
-
-          <div className='flex flex-col items-start justify-start bg-neutral-800 p-3 gap-4 rounded-[5px] min-h-[300px]'>
-            <div className='w-full flex flex-row gap-3 items-center
-             justify-between'>
-              <p className='text-sm font-medium text-neutral-300'>In Progress</p>
-              <button>
-                <img src={add} alt="add" className='w-5 h-5 invert opacity-70 hover:opacity-100 transition' />
-              </button>
-            </div>
-
-            <div className='w-full flex flex-col items-start justify-center bg-neutral-200 text-neutral-900 rounded-[5px] hover:bg-neutral-300 transition'>
-              <h1 className='pt-3 px-2 text-[18px] font-semibold'>Title</h1>
-              <p className='pb-3 px-2'>Content</p>
-              <div className='w-full mt-2 border-t border-neutral-600'></div>
-
-              <div className='w-full flex flex-row items-center justify-between'>
-                <div className='p-2  flex flex-row gap-2 items-center'>
-                  <img src={calendar} alt="calendar" className='w-5 h-5 opacity-55' />
-                  <p className='font-semibold text-[12px]'>Apr 4</p>
-                </div>
-
-                <img src={trash} alt="trash"
-                  className='w-4 h-4 m-2 text-red-500 opacity-70 hover:opacity-100 hover:scale-110 transition cursor-pointer' />
-              </div>
-            </div>
-          </div>
-
-          <div className='flex flex-col items-start justify-start bg-neutral-800 p-3 gap-4 rounded-[5px] min-h-[300px]'>
-            <div className='w-full flex flex-row gap-3 items-center
-             justify-between '>
-              <p className='text-sm font-medium text-neutral-300'>In Review</p>
-              <button>
-                <img src={add} alt="add" className='w-5 h-5 invert opacity-70 hover:opacity-100 transition' />
-              </button>
-            </div>
-
-            <div className='w-full flex flex-col items-start justify-center  bg-neutral-200 text-neutral-900 rounded-[5px] hover:bg-neutral-300 transition'>
-              <h1 className='pt-3 px-2 text-[18px] font-semibold'>Title</h1>
-              <p className='pb-3 px-2'>Content</p>
-              <div className='w-full mt-2 border-t border-neutral-600'></div>
-
-              <div className='w-full flex flex-row items-center justify-between'>
-                <div className='p-2  flex flex-row gap-2 items-center'>
-                  <img src={calendar} alt="calendar" className='w-5 h-5 opacity-55' />
-                  <p className='font-semibold text-[12px]'>Apr 4</p>
-                </div>
-
-                <img src={trash} alt="trash"
-                  className='w-4 h-4 m-2 text-red-500 opacity-70 hover:opacity-100 hover:scale-110 transition cursor-pointer' />
-              </div>
-            </div>
-          </div>
-
-          <div className='flex flex-col items-start justify-start bg-neutral-800 p-3 gap-4 rounded-[5px] min-h-[300px]'>
-            <div className='w-full flex flex-row gap-3 items-center
-             justify-between '>
-              <p className='text-sm font-medium text-neutral-300'>Done</p>
-              <button>
-                <img src={add} alt="add" className='w-5 h-5 invert opacity-70 hover:opacity-100 transition' />
-              </button>
-            </div>
-
-            <div className='w-full flex flex-col items-start justify-center  bg-neutral-200 text-neutral-900 rounded-[5px] hover:bg-neutral-300 transition'>
-              <h1 className='pt-3 px-2 text-[18px] font-semibold'>Title</h1>
-              <p className='pb-3 px-2'>Content</p>
-              <div className='w-full mt-2 border-t border-neutral-600'></div>
-
-              <div className='w-full flex flex-row items-center justify-between'>
-                <div className='p-2  flex flex-row gap-2 items-center'>
-                  <img src={calendar} alt="calendar" className='w-5 h-5 opacity-55' />
-                  <p className='font-semibold text-[12px]'>Apr 4</p>
-                </div>
-
-                <img src={trash} alt="trash"
-                  className='w-4 h-4 m-2 text-red-500 opacity-70 hover:opacity-100 hover:scale-110 transition cursor-pointer' />
-              </div>
-            </div>
-          </div>
-
+          <Column
+            title="To Do"
+            tasks={tasks.filter((t: Task) => t.status === "todo")}
+            onAdd={addTask}
+            onDelete={deleteTask}
+          />
+          <Column
+            title="In Progress"
+            tasks={tasks.filter(t => t.status === "in-progress")}
+          />
+          <Column
+            title="In Review"
+            tasks={tasks.filter(t => t.status === "in-review")}
+          />
+          <Column
+            title="Done"
+            tasks={tasks.filter(t => t.status === "done")}
+          />
         </div>
 
       </div>
