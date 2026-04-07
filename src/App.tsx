@@ -54,6 +54,7 @@ function App() {
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
@@ -67,10 +68,10 @@ function App() {
     );
   };
 
-  
+
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  
+
   const [isOpen, setIsOpen] = useState(false);
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "auto";
