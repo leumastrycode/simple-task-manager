@@ -1,6 +1,7 @@
 import './App.css'
 import { useState, useEffect } from "react";
 import Column from "./components/Column";
+import { DndContext } from "@dnd-kit/core"
 
 type Task = {
   id: string;
@@ -34,12 +35,15 @@ function App() {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = (title: string) => {
+  const addTask = (title: string, content: string) => {
     const newTask: Task = {
       id: Date.now().toString(),
       title,
-      content: "No description",
-      date: "Today",
+      content,
+      date: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric"
+      }),
       status: "todo",
     };
 
@@ -49,6 +53,28 @@ function App() {
   const deleteTask = (id: string) => {
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
+
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === active.id ? { ...task, status: over.id }
+          : task
+      )
+    );
+  };
+
+  
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  
+  const [isOpen, setIsOpen] = useState(false);
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "auto";
+  }, [isOpen]);
 
   return (
     <div className="min-h-screen py-5 px-7 flex items-start justify-center bg-neutral-900 text-white">
@@ -60,37 +86,103 @@ function App() {
         </h1>
 
         <div className='w-full flex flex-row items-start justify-end gap-5'>
-          <button className='py-2 px-3 bg-neutral-600 rounded-[5px] text-[14px]'>
+          <button
+            className='py-2 px-3 bg-neutral-600 rounded-[5px] text-[14px] hover:bg-neutral-500 transition rounded-[5px] text-[14px]'
+            onClick={() => setIsOpen(true)}
+          >
             Add Task
           </button>
         </div>
 
-        <div className='w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 border rounded-[6px] '>
+        <DndContext onDragEnd={handleDragEnd}>
 
-          <Column
-            title="To Do"
-            tasks={tasks.filter((t: Task) => t.status === "todo")}
-            onAdd={addTask}
-            onDelete={deleteTask}
-          />
-          <Column
-            title="In Progress"
-            tasks={tasks.filter(t => t.status === "in-progress")}
-          />
-          <Column
-            title="In Review"
-            tasks={tasks.filter(t => t.status === "in-review")}
-          />
-          <Column
-            title="Done"
-            tasks={tasks.filter(t => t.status === "done")}
-          />
-        </div>
+          <div className='w-full p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 border rounded-[6px] '>
+
+            <Column
+              title="To Do"
+              status='todo'
+              tasks={tasks.filter((t: Task) => t.status === "todo")}
+              onDelete={deleteTask}
+            />
+            <Column
+              title="In Progress"
+              status='in-progress'
+              tasks={tasks.filter((t: Task) => t.status === "in-progress")}
+              onDelete={deleteTask}
+            />
+            <Column
+              title="In Review"
+              status='in-review'
+              tasks={tasks.filter((t: Task) => t.status === "in-review")}
+              onDelete={deleteTask}
+            />
+            <Column
+              title="Done"
+              status='done'
+              tasks={tasks.filter((t: Task) => t.status === "done")}
+              onDelete={deleteTask}
+            />
+          </div>
+        </DndContext>
 
       </div>
+
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center"
+          onClick={() => setIsOpen(false)}
+        >
+
+          <div
+            className="bg-white text-black p-5 rounded-lg w-[300px] flex flex-col gap-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="font-semibold">New Task</h2>
+
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title"
+              className="border p-2 rounded"
+            />
+
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder="Description"
+              className="border p-2 rounded"
+            />
+
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => {
+                  setIsOpen(false);
+                }}
+              >
+                Cancel
+              </button>
+
+              <button className="bg-black text-white px-3 py-1 rounded"
+                onClick={() => {
+                  if (!title.trim()) return;
+
+                  addTask(title, content);
+                  setTitle("");
+                  setContent("");
+                  setIsOpen(false);
+                }}
+              >
+                Add
+              </button>
+            </div>
+          </div>
+
+        </div>
+      )}
     </div>
   );
 }
+
 
 
 
