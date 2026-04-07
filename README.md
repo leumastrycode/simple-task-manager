@@ -36,7 +36,7 @@ _Add screenshot here_
 
 Example:
 
-![App Screenshot](./public/screenshot.png)
+![App Screenshot](./public/ss-managementApp-1.png)
 
 ---
 
