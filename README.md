@@ -67,7 +67,7 @@ npm run dev
 
 ## 🌐 Live Demo
 
-_Add your deployed link here (Vercel, etc.)_
+not yet
 
 ---
 
