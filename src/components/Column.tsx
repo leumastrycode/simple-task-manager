@@ -45,6 +45,7 @@ export default function Column({ status, title, tasks, onDelete }: Props) {
                         content={task.content}
                         date={task.date}
                         onDelete={() => onDelete?.(task.id)}
+                        expanded={expandedId === task.id}
                         onToggle={() => toggleExpand(task.id)}
                     />
                 ))}
