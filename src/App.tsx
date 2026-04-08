@@ -88,7 +88,7 @@ function App() {
 
         <div className='w-full flex flex-row items-start justify-end gap-5'>
           <button
-            className='py-2 px-3 bg-neutral-600 rounded-[5px] text-[14px] hover:bg-neutral-500 transition rounded-[5px] text-[14px]'
+            className='py-2 px-3 bg-neutral-700 rounded-[5px] text-[14px] hover:bg-neutral-500 transition'
             onClick={() => setIsOpen(true)}
           >
             Add Task
@@ -134,7 +134,7 @@ function App() {
         >
 
           <div
-            className="bg-white text-black p-5 rounded-lg w-[300px] flex flex-col gap-3"
+            className="bg-white text-black w-10/12 h-1/3 p-5 rounded-lg flex flex-col gap-3"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-semibold">New Task</h2>
@@ -151,10 +151,10 @@ function App() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Description"
-              className="border p-2 rounded"
+              className="border p-2 rounded h-screen"
             />
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-5">
               <button
                 onClick={() => {
                   setIsOpen(false);
@@ -163,7 +163,7 @@ function App() {
                 Cancel
               </button>
 
-              <button className="bg-black text-white px-3 py-1 rounded"
+              <button className="bg-neutral-700 text-white px-3 py-1 rounded"
                 onClick={() => {
                   if (!title.trim()) return;
 

@@ -1,5 +1,6 @@
 import TaskCard from "./TaskCard";
 import { useDroppable } from "@dnd-kit/core";
+import { useState } from "react";
 
 type Task = {
     id: string;
@@ -21,6 +22,12 @@ export default function Column({ status, title, tasks, onDelete }: Props) {
         id: status,
     });
 
+    const [expandedId, setExpandedId] = useState<string | null>(null);
+
+    const toggleExpand = (id: string) => {
+        setExpandedId((prev) => (prev === id ? null : id));
+    };
+
     return (
         <div className='flex flex-col items-start justify-start bg-neutral-800 p-3 gap-4 rounded-[5px] min-h-[300px]'
             ref={setNodeRef}
@@ -38,6 +45,7 @@ export default function Column({ status, title, tasks, onDelete }: Props) {
                         content={task.content}
                         date={task.date}
                         onDelete={() => onDelete?.(task.id)}
+                        onToggle={() => toggleExpand(task.id)}
                     />
                 ))}
                 {tasks.length === 0 && (
